@@ -1,0 +1,82 @@
+{% extends "activities\base.html" %}
+{% block title %} Aνατεθείσες Δραστηριόητες {% endblock%}
+
+{% block maincontent %}
+
+      {% if messages %}
+      <p></p>
+      <div align="center">
+        {% for message in messages %}
+        <div class="alert alert-danger" role="alert">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      {% if activities %}
+      <table id="tableId" align="center">
+        <thead>
+          <tr class= "head">
+								<th style="width:6%"> </th>
+								<th>Τίτλος</th>
+								<th>Ημερομηνία ανάθεσης</th>
+								<th>Προθεσμία</th>
+								<th style="width:10%"> </th>
+                <th style="width:10%"> </th>
+					</tr>
+        </thead>
+        <tbody id="searchTable">
+            {% for activity in activities %}
+            <tr class="body" style= "cursor: pointer; {% if not activity.is_complete and activity.is_past_due %} background: #ffe6e6; {% endif %}">
+              <td align = "center" class="vcenter">
+              {% if activity.is_task %}
+                <img src="https://img.icons8.com/dotty/80/000000/task-planning.png" width="30" height="30" title="αρμοδιότητα"/>
+              {% elif activity.is_project %}
+                <img src="https://img.icons8.com/dotty/50/000000/project-setup.png" width="30" height="30" title="έργο"/>
+              {% endif %}
+              </td>
+              <td><a href="{% url 'activities:activity_details' activity_id=activity.id %}">{{ activity.title }}</a></td>
+              <td>{{ activity.release_date|date:"d/m/Y" }}</td>
+              {% if not activity.is_complete %}
+                {% if activity.is_past_due %}
+                <td>Εκπρόθεσμη δραστηριότητα</td>
+                {% else %}
+                <td>{{ activity.deadline|date:"d/m/Y" }}</td>
+                {% endif %}
+                <td class="text-center">
+                  <div>
+                    <a data-toggle="modal" data-target=""><span class="fa fa-comments-o" style="font-size:22px; align:center;" alt="Προσθήκη Σχολίου" width="150" height="150"></span></a>
+                  </div>
+                </td>
+                <td class="text-center">
+                  <a href="{% url 'activities:edit' activity_id=activity.id %}">
+                    <span class="fa fa-edit" title="Τροποποίηση" style="font-size:22px; align:center;" width="150" height="150"></span>
+                  </a>
+                </td>
+              {% else %}
+                <td>{{ activity.deadline|date:"d/m/Y" }}</td>
+                {% if activity.is_task and not activity.task.is_approved %}
+                  <td><i>Αναμένεται</i></td>
+                  <td><i>έγκριση</i></td>
+                {% else %}
+                  <td></td>
+                  <td><i>Ολοκληρώθηκε</i></td>
+                {% endif %}
+              {% endif %}
+              </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+      <div align="center">
+        <div class="btn btn-primary ld-over-inverse"id="btn-load-more" onclick="loadMore()">
+          Φόρτωση Περισσοτέρων
+        </div>
+      </div>
+    {% else %}
+      <br>
+      <div class="alert alert-info center-block" style="width: 100%;" role="alert">
+        <p class="text-center">
+        <strong>Δεν έχετε δημιουργήσει κάποια δραστηριότητα</strong>
+        </p>
+      </div>
+    {% endif %}
+{% endblock %}

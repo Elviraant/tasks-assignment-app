@@ -1,0 +1,66 @@
+{% extends "activities\base.html" %}
+{% block title %} Τροποποίηση Έργου {% endblock %}
+{% block maincontent %}
+  <div align="center">
+    <h1> Τροποποίηση Έργου </h1>
+  </div>
+  {% if form.errors %}
+  <div align="left">
+    <div class="alert alert-danger" role="alert">
+        <ol>
+          {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ field.label_tag }} {{ error|escape }}</li>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <li>{{ error|escape }}</li>
+          {% endfor %}
+        </ol>
+     </div>
+  </div>
+  {% endif %}
+  <form method="post" action="{% url 'activities:edit_project' project.id %}">
+  {% csrf_token %}
+    {{ form.project_id }}
+    <div class="form-group col-md-12">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+    </div>
+    <div class="form-group col-md-12">
+      {{ form.deadline.label_tag }}
+      {{ form.deadline }}
+    </div>
+    <div class="form-group col-md-12">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <div class="form-group col-md-12">
+      <ul class="list-unstyled">
+  				<li><b>Αρμοδιότητες από τις οποίες αποτελείται: </b></li>
+  				<ul class="list">
+            {% for task in project.task_set.all %}
+                <br>
+  				      <li><span class="fa fa-edit" title="Τροποποίηση" style="font-size:16px; align:center;" width="150" height="150"> {{ task.title }}</span></li>
+            {% endfor %}
+  				</ul>
+  		</ul>
+    </div>
+    <div class="form-group">
+      <div class="col-md-12">
+        <a href= "{% url 'activities:activities' %}" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Πίσω </a>
+
+        <button type="reset" class="btn btn-default">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button>
+        <button type ="submit" name="continue" class="submit" style="float: right;margin: 0px;">Τροποποίηση αρμοδιοτήτων έργου</button>
+        <br>
+        <br>
+        <br>
+        <button type ="submit" name="done" class="submit" style="float: right; margin: 0px;"><span class="glyphicon glyphicon-floppy-disk"></span> Ολοκλήρωση</button>
+      </div>
+    </div>
+
+
+  </form>
+{% endblock %}

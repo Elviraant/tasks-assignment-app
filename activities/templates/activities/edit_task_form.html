@@ -1,0 +1,64 @@
+{% extends "activities\base.html" %}
+{% block title %} Τροποποίηση Αρμοδιότητας {% endblock %}
+{% block maincontent %}
+  <div align="center">
+    <h1> Τροποποίηση Αρμοδιότητας </h1>
+  </div>
+  {% if form.errors %}
+  <div align="left">
+    <div class="alert alert-danger" role="alert">
+        <ol>
+          {% for field in form %}
+            {% for error in field.errors %}
+            <li>{{ field.label_tag }} {{ error|escape }}</li>
+            {% endfor %}
+          {% endfor %}
+          {% for error in form.non_field_errors %}
+            <li>{{ error|escape }}</li>
+          {% endfor %}
+        </ol>
+     </div>
+  </div>
+  {% endif %}
+  <form method="post" {% if parent_project %} action="{% url 'activities:edit_task' task_id=task.id parent_project_id=parent_project.id %}"
+                      {% elif not parent_project %} action="{% url 'activities:edit_task' task_id=task.id %}" {% endif %}>
+  {% csrf_token %}
+    {{ form.task_id }}
+    {{ form.project_id}}
+    <div class="form-group col-md-12">
+      {{ form.title.label_tag }}
+      {{ form.title }}
+    </div>
+    <div class="form-group col-md-12">
+      {{ form.deadline.label_tag }}
+      {{ form.deadline }}
+    </div>
+    <div class="form-group col-md-12">
+      {{ form.description.label_tag }}
+      {{ form.description }}
+    </div>
+    <div class="form-group col-md-12">
+      {{ form.receiver.label_tag }}
+      {{ form.receiver }}
+    </div>
+    <div class="form-group">
+        <div class="col-md-12">
+          <a {% if parent_project %} href="{% url 'activities:choose_project_task_form'  project_id=parent_project.id %}" {% else %} href= "{% url 'activities:activities' %}" {% endif %} class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span> Πίσω </a>
+
+          <button type="reset" class="btn btn-default">
+              <span class="glyphicon glyphicon-refresh"></span>
+          </button>
+          {% if parent_project %}
+          <button type ="submit" name="continue" class="submit" style="float: right; margin: 0px;">Επιλογή επόμενης αρμοδιότητας</button>
+          {% endif %}
+          <br><br>
+          <button type ="submit" name="done" class="submit" style="float: right; margin: 0px;"><span class="glyphicon glyphicon-floppy-disk"></span> Ολοκλήρωση</button>
+
+
+
+        </div>
+    </div>
+
+
+  </form>
+{% endblock %}

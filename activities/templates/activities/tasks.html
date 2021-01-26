@@ -1,0 +1,110 @@
+{% extends "activities\base.html" %}
+{% load static %}
+{% block title %} Οι αρμοδιότητές μου {% endblock%}
+
+{% block maincontent %}
+{% if messages %}
+<p></p>
+<div align="center">
+  {% for message in messages %}
+  <div class="alert alert-danger" role="alert">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+{% if tasks %}
+  <table id = "tableId" align="center">
+    <thead>
+      <tr class= "head">
+        <th style="width:5%">Ολοκληρώθηκε</th>
+        <th>Τίτλος</th>
+        <th>Προθεσμία</th>
+        <th>Αποστολέας</th>
+        <th></th>
+        <th style="width:5%"></th>
+      </tr>
+    </thead>
+
+    {% for task in tasks %}
+      <tbody id="searchTable">
+      {% if not task.is_complete %}
+        {% if task.is_past_due  %}
+            <tr class="body" style="background: #ffe6e6">
+              <form method ="POST" action="#">
+                <td align = "center" class="vcenter">
+                  <input type="hidden" name="selectedTasks" value="{{ task.id }}"/>
+                  <input type="submit" value="Υποβολή"/>
+                </td>
+              </form>
+              <td><a href="{% url 'activities:activity_details' task.id %}">{{ task.title }}</a>
+              <td><i>Εκπρόθεσμη αρμοδιότητα</i></td>
+              <td>{{ task.sender.full_name }}</td>
+              {% if not employee.is_officeclerk %}
+              <span style="font-size:30px" alt="Κατάτμηση Αρμοδιότητας" title="Κατάτμηση Αρμοδιότητας" width="224" height="224"><a class = "iconReference" href ="create_project.jsp?id=<%=task.getId()%>"> &#247;</a></span>
+              {% endif %}
+              <td></td>
+              </td>
+              <td>
+                <div>
+                  <a data-toggle="modal" data-target="#myModal"><span class="fa fa-comments-o" style="font-size:22px; align:center;" alt="Προσθήκη Σχολίου" width="150" height="150"></span></a>
+                </div>
+              </td>
+
+            </tr>
+
+        {% else %}
+            <tr class="body">
+              <form method ="POST" action="#">
+                <td align = "center" class="vcenter">
+                  <input type="hidden" name="selectedTasks" value="{{ task.id }}"/>
+                  <input type="submit" value="Υποβολή"/>
+                </td>
+              </form>
+              <td><a href="{% url 'activities:activity_details' task.id %}">{{ task.title }}</a>
+              <p style="color: #B6BCB4; font-size:30;" id="comment{{ task.id }}"></p></td>
+              <td>{{ task.deadline|date:"d/m/Y" }}</td>
+              <td>{{ task.sender.full_name }}</td>
+              <td>
+              {% if not employee.is_officeclerk %}
+              <span style="font-size:30px" alt="Κατάτμηση Αρμοδιότητας" title="Κατάτμηση Αρμοδιότητας" width="224" height="224"><a class = "iconReference" href ="create_project.jsp?id=<%=task.getId()%>"> &#247;</a></span>
+              {% endif %}
+              </td>
+              <td>
+                <div>
+                  <a data-toggle="modal" data-target="#myModal"><span class="fa fa-comments-o" style="font-size:22px; align:center;" alt="Προσθήκη Σχολίου" width="150" height="150"></span></a>
+                </div>
+              </td>
+            </tr>
+            {% endif %}
+      {% elif task.is_complete and not task.is_approved  %}
+            <tr class = "body pending" bgcolor="#F8F8F8">
+              <td align = "center"><img title="Αναμένεται Έγκριση" style = "font-size: 20px" width= "22" height ="22" src="{% static 'activities\images\pending_approval.png'%}" alt="Αναμένεται Έγκριση"></td>
+              <td>
+                <a href="{% url 'activities:activity_details' task.id %}">{{ task.title }}</a>
+              </td>
+              <td>{{ task.deadline|date:"d/m/Y" }}</td>
+              <td>{{ task.sender.full_name }}</td>
+              <td></td>
+              <td></td>
+
+            </tr>
+      {% endif %}
+      </tbody>
+  {% endfor %}
+  </table>
+
+  <div align="center" class="button-content">
+    <div class="btn btn-primary ld-over-inverse" id="btn-load-more" onclick="loadMore()">
+      Φόρτωση Περισσοτέρων
+    </div>
+  </div>
+
+{% else %}
+  <br>
+  <div class="alert alert-info center-block" style="width: 100%;" role="alert">
+    <p class="text-center">
+    <strong>Δεν εκκρεμεί κάποια αρμοδιότητα προς ολοκλήρωση</strong>
+    </p>
+  </div>
+
+{% endif %}
+{% endblock %}

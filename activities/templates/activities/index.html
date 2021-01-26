@@ -1,0 +1,43 @@
+{% load static %}
+<html>
+  <link rel="stylesheet" type="text/css" href="{% static 'activities/register_login.css' %}">
+
+  <body>
+    {% if messages %}
+      {% for message in messages %}
+      <div id="formFooter">
+    		<a>{{ message }}</a>
+    	</div>
+      {% endfor %}
+    {% endif %}
+
+    <div class="wrapper fadeInDown">
+      <div id="formContent">
+        <div class="fadeIn first">
+          <img src="https://www.dafni-ymittos.gov.gr/wp-content/uploads/2017/06/logosquare100.png" alt="Image" id="icon" alt="User Icon" style="width:100px; height: 100px;"/>
+        </div>
+        <form id="login-form" method="post" action="{% url 'activities:authenticate' %}">
+          {% csrf_token %}
+          {{form}}
+          <button type="submit" class="submit" onclick="check(this.form)">ΣΥΝΔΕΣΗ</button>
+        </form>
+        <div id="formFooter">
+          <a class="underlineHover" href="#">Δεν είστε εγγεγραμμένος/η;</a>
+        </div>
+      </div>
+    </div>
+</body>
+  <script language="javascript">
+  function check(form)
+  {
+  if(form.login.value!= "" && form.password.value!= ""){
+  window.location.href="loginController.jsp";
+  }
+  else{
+  document.getElementById("login").required= true;
+  document.getElementById("password").required= true;
+  alert( "Παρακαλώ συμπληρώστε όλα τα πεδία" );
+  }
+  }
+  </script>
+</html>

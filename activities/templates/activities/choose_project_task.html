@@ -1,0 +1,43 @@
+{% extends "activities\base.html" %}
+{% block title %} Επιλογή αρμοδιότητας {% endblock %}
+
+{% block maincontent %}
+{% if messages %}
+<p></p>
+<div align="center">
+  <div class="alert alert-success" role="alert">
+  {% for message in messages %}
+  {{ message }}
+  {% endfor %}
+  </div>
+</div>
+{% endif %}
+<h2 style="text-align:center">Τροποποίηση αρμοδιοτήτων</h2>
+{% if form.errors %}
+<div align="left">
+  <div class="alert alert-danger" role="alert">
+      <ol>
+        {% for field in form %}
+          {% for error in field.errors %}
+          <li>{{ field.label_tag }} {{ error|escape }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <li>{{ error|escape }}</li>
+        {% endfor %}
+      </ol>
+   </div>
+</div>
+{% endif %}
+  <form method ="POST" action="{% url 'activities:choose_project_task' project.id %}">
+    {% csrf_token %}
+    {{ form.project_id }}
+	   <div class="form-group col-md-12">
+       {{ form.project_task_id.label_tag }}
+       {{ form.project_task_id }}
+			</div>
+			<button type ="submit" class="submit" style="float: right"><span class="glyphicon glyphicon-arrow-right"></span></button>
+  </form>
+
+
+{% endblock %}

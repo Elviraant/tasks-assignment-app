@@ -1,0 +1,33 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+		<!-- after 2 seconds, it will redirect to activities/index.html -->
+		<meta http-equiv="refresh" content="2;{% url 'activities:index' %}"/>
+
+
+		<title>Sign out</title>
+		<link href="{% static 'activities/register_login.css' %}" rel="stylesheet">
+
+
+	</head>
+	<body>
+		<div class="wrapper fadeInDown">
+			<div id="formContent">
+				<div class="fadeIn first">
+					<img src="https://www.dafni-ymittos.gov.gr/wp-content/uploads/2017/06/logosquare100.png" alt="Image"" id="icon" alt="User Icon" style="width:100px; height: 100px;"/>
+				</div>
+				<div class="fadeIn second" id="formFooter">
+					<a class="underlineHover"><strong>Η έξοδος πραγματοποιήθηκε με επιτυχία.</strong></a>
+				</div>
+			</div>
+		</div>
+
+	</body>
+</html>

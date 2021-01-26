@@ -1,0 +1,285 @@
+{% load static %}
+{% url 'activities:notifications' as notifications_url %}
+{% url 'activities:tasks' as tasks_url %}
+{% url 'activities:activity_details' as activity_url %}
+<!DOCTYPE>
+<html>
+
+  <head>
+    <title>{% block title %} {% endblock %}</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+
+	  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'activities/ldbtn.min.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'activities/loading.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'activities/template.css' %}"/>
+  </head>
+
+
+
+  <body onload="load()">
+    <div class="grid-container">
+    {# This is the navbar at the top #}
+    <div class="item1">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          {# This is the header #}
+          <div class="navbar-header">
+  					<a class="navbar-brand" href="#" style="font-size: 15px;"><span>Δήμος Δάφνης-Υμηττού</span></a>
+  				</div>
+          {# This is the list #}
+          <ul class="nav navbar-nav" id="navbar">
+            {% if employee.is_departmentdirector or employee.is_officeclerk %}
+              <li class="{% if request.path == tasks_url or receiver %} active {% endif %}"><a href="{% url 'activities:tasks' %}" class="notification"><span class="active">ΟΙ ΑΡΜΟΔΙΟΤΗΤΕΣ ΜΟΥ</span></a></li>
+            {% endif %}
+            {% if not employee.is_officeclerk %}
+            <li><a href="#" class="notification"><span class="active">ΔΗΜΙΟΥΡΓΙΑ ΔΡΑΣΤΗΡΙΟΤΗΤΑΣ</span></a></li>
+            <li class="{% if request.path != notifications_url and request.path != tasks_url and receiver is None %} active {% endif %}"><a href="{% url 'activities:activities' %}" class="notification"><span class="active">ΑΝΑΤΕΘΕΙΣΕΣ ΔΡΑΣΤΗΡΙΟΤΗΤΕΣ</span></a></li>
+            {% endif %}
+            <li class="{% if request.path == notifications_url %} active {% endif %}"><a href="{% url 'activities:notifications'%}" class="notification"><span>ΕΙΔΟΠΟΙΗΣΕΙΣ</span>
+              {% if employee.notifications is not None and employee.notifications != 0 %}
+              <span class="badge">
+                {{ employee.notifications }}
+              </span>
+              {% endif %}
+            </a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a><span id="dateTime"></span></a></li>
+            {# This is for the media screen #}
+            <li><div class="dropdown1">
+                <a class="navbar-brand" href="#"style="font-size: 15px;"><span>Δήμος Δάφνης-Υμηττού</span></a>
+                  <button class="dropbtn1">
+                    <i class="fa fa-bars"></i>
+                  </button>
+                  <div class="dropdown1-content">
+                    <ul>
+                      {% if employee.is_departmentdirector or employee.is_officeclerk %}
+                        <li class="{% if request.path == tasks_url or receiver %} active {% endif %}"><a href="{% url 'activities:tasks' %}" class="notification"><span class="active">ΟΙ ΑΡΜΟΔΙΟΤΗΤΕΣ ΜΟΥ</span></a></li>
+                      {% endif %}
+                      {% if not employee.is_officeclerk %}
+                      <li><a href="#" class="notification"><span class="active">ΔΗΜΙΟΥΡΓΙΑ ΔΡΑΣΤΗΡΙΟΤΗΤΑΣ</span></a></li>
+                      <li class="{% if request.path != notifications_url and request.path != tasks_url and receiver is None %} active {% endif %}"><a href="{% url 'activities:activities' %}" class="notification"><span class="active">ΑΝΑΤΕΘΕΙΣΕΣ ΔΡΑΣΤΗΡΙΟΤΗΤΕΣ</span></a></li>
+                      {% endif %}
+                      <li class="{% if request.path == notifications_url %} active {% endif %}"><a href="{% url 'activities:notifications'%}" class="notification"><span>ΕΙΔΟΠΟΙΗΣΕΙΣ</span>
+                        {% if employee.notifications is not None and employee.notifications != 0 %}
+                        <span class="badge">
+                          {{ employee.notifications }}
+                        </span>
+                        {% endif %}
+                      </a></li>
+                    </ul>
+                  </div>
+                </div>
+            </li>
+            {# end of media screen #}
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    {# This is the menu on the left #}
+    <div class="item2">
+      <div class ="menu">
+        <ul>
+          <li><a href="#"><span><img src="{% static 'activities/images/profile3.png' %}" alt="εικόνα προφίλ"/>{{ employee.full_name }}</span></a></li>
+          <li><a href="#">Τα στοιχεία μου</a></li>
+          <li><a href="{% url 'activities:logout' %}"><span class="glyphicon glyphicon-log-out"></span> Αποσύνδεση</a></li>
+        </ul>
+      </div>
+    </div>
+
+    {# This is the main content #}
+    <div class="item3">
+      <div class=main>
+        <div class="container">
+        {% block maincontent %}{% endblock %}
+        </div>
+      </div>
+    </div>
+
+    {# This is the footer #}
+    <div class="item4">
+      <footer id="footer">
+        <div class="footer-top">
+          <img src="{% static 'activities/images/bulb-1.1s-128px (1).svg' %}" class="ld ld-beat" style="animation-duration:4.0s"/>
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-4 col-md-6 footer-info">
+                <h3> OptimizeIt.</h3>
+              </div>
+              <div class="col-lg-4 col-md-6 footer-links">
+                <h4>Πληροφοριες</h4>
+                <ul>
+                  <li><i class="ion-ios-arrow-right"></i> Ανδρεάδη Θεοδώρα </li>
+                  <li><i class="ion-ios-arrow-right"></i> Αντωνογιαννάκη Μαρία-Ελβίρα </li>
+                  <li><i class="ion-ios-arrow-right"></i> Γκούλτα Μαρία </li>
+                  <li><i class="ion-ios-arrow-right"></i> Περίκου Αικατερίνη </li>
+                </ul>
+              </div>
+              <div class="col-lg-4 col-md-6 footer-links" style="text-align:left;">
+                <h4>Επικοινωνηστε μαζι μας</h4>
+                <ul class = "list-unstyled">
+                  <li><i class="ion-ios-arrow-right"></i> theodoraandreadi@gmail.com </li>
+                  <li><i class="ion-ios-arrow-right"></i> eantonog1@gmail.com </li>
+                  <li><i class="ion-ios-arrow-right"></i> marygkoulta@gmail.com </li>
+                  <li><i class="ion-ios-arrow-right"></i> perikoukaterina@gmail.com </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container" style="background-color:#262626">
+          <div class="copyright">
+            <strong> &copy; 2019 Copyright</strong>
+          </div>
+        </div>
+      </footer>
+
+      <div id="back-to-top" class="back-to-top">
+        <a href="#item3"><i class="fa fa-chevron-up"></i></a>
+      </div>
+    </div>
+
+
+  </div>
+  </body>
+  <script>
+
+  	document.getElementById("dateTime").innerHTML = formatToGreekDate();
+
+  	function formatToGreekDate(){
+
+  		var date = new Date();
+  		var dd = date.getDate();
+  		var d = date.getDay();
+  		var mm = date.getMonth();
+  		var yyyy = date.getFullYear();
+
+
+
+  		var greekMonths = ['Ιανουαρίου','Φεβρουαρίου','Μαρτίου','Απριλίου','Μαΐου','Ιουνίου','Ιουλίου','Αυγούστου','Σεπτεμβρίου','Οκτωβρίου','Νοεμβρίου','Δεκεμβρίου'];
+  		var greekdays = ['Κυριακή', 'Δευτέρα','Τρίτη','Τετάρτη','Πέμπτη','Παρασκευή','Σάββατο'];
+
+  		return '' + greekdays[d] + ' ' + dd + ' ' + greekMonths[mm] + ' '+ yyyy + ' ';
+  	}
+
+    $(document).ready(function () {
+
+    $(window).scroll(function () {
+        if ($(window).scrollTop() > 100) {
+            $('.back-to-top').fadeIn();
+        } else {
+            $('.back-to-top').fadeOut();
+        }
+    });
+
+    $('.back-to-top').on('click', function(e) {
+        e.preventDefault();
+        $("html, body").animate({
+            scrollTop: 0
+        }, 1500);
+
+    });
+    });
+
+  function load() {
+	var trs = $("#tableId tr");
+	var btnMore = $("#btn-load-more");
+	var x = trs.length;
+	var currentIndex = 5;
+
+	trs.hide();
+	trs.slice(0, 5).show();
+	checkButton();
+
+
+	btnMore.click(function (e) {
+	e.preventDefault();
+	$("#tableId tr").slice(currentIndex, currentIndex + 5).show();
+    currentIndex += 5;
+    checkButton();
+});
+
+  function checkButton() {
+    var currentLength = $("#tableId tr:visible").length;
+
+    if (currentLength >= x) {
+        btnMore.hide();
+    } else {
+        btnMore.show();
+    }
+
+
+}
+}
+
+function loadMore() {
+$('.btn').on('click', function() {
+    var $this = $(this);
+	$this.classList.toggle('loading');
+
+    setTimeout(function() {
+       $this.button('reset');
+   }, 4000);
+});
+
+
+var trs = $("#tableId tr");
+var btnMore = $("#btn-load-more");
+var x = trs.length;
+var currentIndex = 5;
+checkButton();
+
+
+btnMore.click(function (e) {
+	e.preventDefault();
+	$("#tableId tr").slice(currentIndex, currentIndex + 5).show();
+    currentIndex += 5;
+    checkButton();
+});
+
+function checkButton() {
+    var currentLength = $("#tableId tr:visible").length;
+
+    if (currentLength >= x) {
+        btnMore.hide();
+    } else {
+        btnMore.show();
+    }
+
+
+}
+}
+
+function dateFunction() {
+
+  var today = new Date();
+  var dd = today.getDate();
+  var mm = today.getMonth() + 1; //January is 0!
+  var yyyy = today.getFullYear();
+
+  if (dd < 10) {
+    dd = '0' + dd
+  }
+
+  if (mm < 10) {
+    mm = '0' + mm
+  }
+
+  today = yyyy + '-' + mm + '-' + dd;
+  document.getElementById('id_deadline').setAttribute("min", today);
+}
+
+
+
+
+  </script>
+<html>

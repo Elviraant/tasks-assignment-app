@@ -1,0 +1,39 @@
+{% extends "activities\base.html" %}
+{% block title %} Ειδοποιήσεις {% endblock%}
+
+{% block maincontent %}
+{% if notifications %}
+	<table align="center">
+		<thead>
+			<tr class="head">
+				<th style="width: 3%"> </th>
+				<th>Περιγραφή</th>
+				<th>Ημερομήνια</th>
+				<th style="width: 3%">  </th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for notification in notifications %}
+			<tr class="body" {% if not notification.is_shown %} bgcolor="#E8E8E8" {% endif %}>
+				<td><i class="fa fa-bell" style="font-size:19px" width="224" height="224"></i></td>
+				<td><a href="{% url 'activities:activity_details' activity_id=notification.activity.id notification_id=notification.id shown=1 %}">{{ notification.message }}</i></a></td>
+				<td>{{ notification.release_date|date:"d/m/Y" }}</td>
+				<td><a href="#" class="glyphicon glyphicon-trash" style="font-size:19px; text-decoration: none;" alt="Διαγραφή" title="Διαγραφή" width="224" height="224"></a></td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<div align="center" class="button-content">
+	  <div class="btn btn-primary ld-over-inverse" id="btn-load-more" onclick="loadMore()">
+	    Φόρτωση Περισσοτέρων
+	  </div>
+	</div>
+{% else %}
+	<br>
+	<div class="alert alert-info center-block" style="width: 100%;" role="alert">
+		<p class="text-center">
+		<strong>Δεν έχετε καμία ειδοποίηση.</strong>
+		</p>
+		</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "activities\base.html" %}
+{% block title%}Αρμοδιότητα{% endblock %}
+{% block maincontent %}
+
+{% if messages %}
+<p></p>
+<div align="center">
+  {% for message in messages %}
+  <div class="alert alert-success" role="alert">{{ message }}</div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<div class="card">
+  <div class="card-header" style= "text-align:center;">
+    <strong>Αναλυτική Περιγραφή</strong>
+  </div>
+
+  <div class="card-body">
+    <div class="card-title">
+      {{ task.title }}
+    </div>
+
+    <p class="card-text">
+      <ul class="list-unstyled">
+        <li><b>Ημερομηνία ανάθεσης: </b>{{ task.release_date|date:"d/m/Y" }}<br></li>
+        <li><b>Προθεσμία ολοκλήρωσης: </b>{{ task.deadline|date:"d/m/Y" }}<br></li>
+        <li><b>Παραλήπτης: </b>{{ task.receiver }}<br></li>
+        <li><b>Ολοκληρώθηκε: </b>{{ task.completed }}<br></li>
+        <li><b>Λεπτομερής περιγραφή: </b>
+          <div class = "border">
+            {{ task.description }}
+          </div><br>
+        </li>
+        </ul>
+    </p>
+    {% if sender and task.is_complete and not task.is_approved %}
+				<div class="modal-AcceptDeclinefooter">
+							<button type="accept" onclick="approveTask()" class="acceptTask" data-dismiss="modal" data-target="#acceptModal" data-toggle="modal">Έγκριση</button>
+							<button type="decline" onclick="denyTask()" class="declineTask" data-dismiss="modal" data-target="#declineModal" data-toggle="modal">Απόρριψη</button>
+				</div>
+	{% endif %}
+  </div>
+</div>
+{% endblock %}
